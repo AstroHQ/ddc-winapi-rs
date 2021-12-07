@@ -13,9 +13,9 @@ readme = "README.md"
 license = "MIT"
 publish = ["astropad"]
 
-[badges]
-travis-ci = { repository = "arcnmx/ddc-winapi-rs" }
-maintenance = { status = "passively-maintained" }
+# [badges]
+# travis-ci = { repository = "arcnmx/ddc-winapi-rs" }
+# maintenance = { status = "passively-maintained" }
 
 [dependencies]
 ddc = { version = "^0.2.0" }
