@@ -11,6 +11,7 @@ documentation = "http://arcnmx.github.io/ddc-winapi-rs/ddc_winapi"
 repository = "https://github.com/arcnmx/ddc-winapi-rs"
 readme = "README.md"
 license = "MIT"
+publish = ["astropad"]
 
 [badges]
 travis-ci = { repository = "arcnmx/ddc-winapi-rs" }
