@@ -20,4 +20,4 @@ publish = ["astropad"]
 [dependencies]
 ddc = { version = "^0.2.0" }
 widestring = "^0.5"
-windows = { version = "0.28", features = ["std", "Win32_Devices_Display", "Win32_Foundation", "Win32_Graphics_Gdi"] }
+windows = { version = "0.33", features = ["Win32_Devices_Display", "Win32_Foundation", "Win32_Graphics_Gdi"] }
