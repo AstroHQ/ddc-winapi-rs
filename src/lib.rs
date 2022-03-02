@@ -23,7 +23,7 @@ use std::{fmt, mem, ptr};
 use ddc::{Ddc, DdcHost, FeatureCode, TimingMessage, VcpValue};
 use widestring::WideCString;
 use windows::{
-    core::Result as WinResult,
+    core::{Result as WinResult, PSTR},
     Win32::{
         Devices::Display::{
             CapabilitiesRequestAndCapabilitiesReply, DestroyPhysicalMonitor,
@@ -32,7 +32,7 @@ use windows::{
             SaveCurrentSettings, SetVCPFeature, MC_MOMENTARY, MC_SET_PARAMETER, MC_TIMING_REPORT,
             MC_VCP_CODE_TYPE,
         },
-        Foundation::{BOOL, LPARAM, PSTR, RECT},
+        Foundation::{BOOL, LPARAM, RECT},
         Graphics::Gdi::{EnumDisplayMonitors, HDC, HMONITOR},
     },
 };
