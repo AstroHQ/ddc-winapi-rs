@@ -23,7 +23,7 @@ use std::{fmt, mem, ptr};
 use ddc::{Ddc, DdcHost, FeatureCode, TimingMessage, VcpValue};
 use widestring::WideCStr;
 use windows::{
-    core::{Result as WinResult, PSTR},
+    core::Result as WinResult,
     Win32::{
         Devices::Display::{
             CapabilitiesRequestAndCapabilitiesReply, DestroyPhysicalMonitor,
@@ -127,7 +127,13 @@ impl Monitor {
         let mut current = 0;
         let mut max = 0;
         BOOL(unsafe {
-            GetVCPFeatureAndVCPFeatureReply(self.handle(), code, &mut ty, &mut current, &mut max)
+            GetVCPFeatureAndVCPFeatureReply(
+                self.handle(),
+                code,
+                Some(&mut ty),
+                &mut current,
+                Some(&mut max),
+            )
         })
         .ok()?;
         Ok((ty, current, max))
@@ -148,14 +154,7 @@ impl Monitor {
         &self,
         string: &mut [u8],
     ) -> WinResult<()> {
-        BOOL(unsafe {
-            CapabilitiesRequestAndCapabilitiesReply(
-                self.handle(),
-                PSTR(string.as_mut_ptr()),
-                string.len() as _,
-            )
-        })
-        .ok()?;
+        BOOL(unsafe { CapabilitiesRequestAndCapabilitiesReply(self.handle(), string) }).ok()?;
         Ok(())
     }
 }
@@ -230,7 +229,7 @@ pub fn get_physical_monitors_from_hmonitor(monitor: HMONITOR) -> WinResult<Vec<P
     BOOL(unsafe { GetNumberOfPhysicalMonitorsFromHMONITOR(monitor, &mut len) }).ok()?;
 
     let mut monitors = vec![PHYSICAL_MONITOR::default(); len as usize];
-    BOOL(unsafe { GetPhysicalMonitorsFromHMONITOR(monitor, len, monitors.as_mut_ptr()) }).ok()?;
+    BOOL(unsafe { GetPhysicalMonitorsFromHMONITOR(monitor, monitors.as_mut_slice()) }).ok()?;
 
     Ok(monitors)
 }
@@ -250,6 +249,6 @@ pub fn enumerate_monitors() -> WinResult<Vec<HMONITOR>> {
 
     let mut monitors = Vec::<HMONITOR>::new();
     let userdata = LPARAM(&mut monitors as *mut _ as _);
-    unsafe { EnumDisplayMonitors(None, ptr::null(), Some(callback), userdata) }.ok()?;
+    unsafe { EnumDisplayMonitors(None, None, Some(callback), userdata) }.ok()?;
     Ok(monitors)
 }
