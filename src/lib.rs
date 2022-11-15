@@ -21,7 +21,7 @@
 use std::{fmt, mem, ptr};
 
 use ddc::{Ddc, DdcHost, FeatureCode, TimingMessage, VcpValue};
-use widestring::WideCString;
+use widestring::WideCStr;
 use windows::{
     core::{Result as WinResult, PSTR},
     Win32::{
@@ -80,7 +80,15 @@ impl Monitor {
     /// Physical monitor description string.
     pub fn description(&self) -> String {
         let str_ptr = ptr::addr_of!(self.monitor.szPhysicalMonitorDescription);
-        unsafe { WideCString::from_ptr_str(str_ptr as _).to_string_lossy() }
+        // TODO: Replace with is_aligned() once it's stable
+        let is_aligned = (str_ptr as usize) & (mem::align_of::<u16>() - 1) == 0;
+        if is_aligned {
+            unsafe { WideCStr::from_ptr_str(str_ptr as _) }.to_string_lossy()
+        } else {
+            let aligned = unsafe { ptr::read_unaligned(str_ptr) };
+            let wide_str = unsafe { WideCStr::from_ptr_str(aligned.as_ptr()) };
+            wide_str.to_string_lossy()
+        }
     }
 
     /// Physical monitor winapi handle.
