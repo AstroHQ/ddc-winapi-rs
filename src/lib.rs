@@ -23,7 +23,7 @@ use std::{fmt, mem, ptr};
 use ddc::{Ddc, DdcHost, FeatureCode, TimingMessage, VcpValue};
 use widestring::WideCStr;
 use windows::{
-    core::Result as WinResult,
+    core::{Result as WinResult, BOOL},
     Win32::{
         Devices::Display::{
             CapabilitiesRequestAndCapabilitiesReply, DestroyPhysicalMonitor,
@@ -32,7 +32,7 @@ use windows::{
             SaveCurrentSettings, SetVCPFeature, MC_MOMENTARY, MC_SET_PARAMETER, MC_TIMING_REPORT,
             MC_VCP_CODE_TYPE,
         },
-        Foundation::{BOOL, LPARAM, RECT},
+        Foundation::{LPARAM, RECT},
         Graphics::Gdi::{EnumDisplayMonitors, HDC, HMONITOR},
     },
 };
@@ -226,10 +226,10 @@ impl fmt::Debug for Monitor {
 /// WinAPI `GetPhysicalMonitorsFromHMONITOR`
 pub fn get_physical_monitors_from_hmonitor(monitor: HMONITOR) -> WinResult<Vec<PHYSICAL_MONITOR>> {
     let mut len = 0;
-    BOOL(unsafe { GetNumberOfPhysicalMonitorsFromHMONITOR(monitor, &mut len) }).ok()?;
+    unsafe { GetNumberOfPhysicalMonitorsFromHMONITOR(monitor, &mut len) }?;
 
     let mut monitors = vec![PHYSICAL_MONITOR::default(); len as usize];
-    BOOL(unsafe { GetPhysicalMonitorsFromHMONITOR(monitor, monitors.as_mut_slice()) }).ok()?;
+    unsafe { GetPhysicalMonitorsFromHMONITOR(monitor, monitors.as_mut_slice()) }?;
 
     Ok(monitors)
 }

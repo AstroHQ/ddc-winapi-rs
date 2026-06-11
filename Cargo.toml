@@ -1,6 +1,6 @@
 [package]
 name = "ddc-winapi"
-version = "0.4.2"
+version = "0.5.0"
 authors = ["arcnmx"]
 edition = "2021"
 
@@ -20,7 +20,7 @@ publish = ["astropad"]
 [dependencies]
 ddc = { version = "^0.2.0" }
 widestring = "1"
-windows = { version = "0.43", features = [
+windows = { version = "0.62", features = [
     "Win32_Devices_Display",
     "Win32_Foundation",
     "Win32_Graphics_Gdi",
